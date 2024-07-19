@@ -8,7 +8,7 @@ public class Product implements Parcelable {
     private String name;
     private double price;
     private String imageUrl;
-
+    private int quantity;
 
     public Product(String id, String name, double price) {
         this.id = id;
@@ -20,6 +20,8 @@ public class Product implements Parcelable {
         id = in.readString();
         name = in.readString();
         price = in.readDouble();
+        imageUrl = in.readString();
+        quantity = in.readInt();
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {
@@ -33,6 +35,22 @@ public class Product implements Parcelable {
             return new Product[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeDouble(price);
+        dest.writeString(imageUrl);
+        dest.writeInt(quantity);
+    }
+
+    // Getters and setters
 
     public String getId() {
         return id;
@@ -58,18 +76,19 @@ public class Product implements Parcelable {
         this.price = price;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(name);
-        dest.writeDouble(price);
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 }

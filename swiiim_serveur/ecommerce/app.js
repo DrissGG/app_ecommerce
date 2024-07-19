@@ -24,14 +24,14 @@ db.connect((err) => {
 });
 
 app.get('/products', (req, res) => {
-  const query = 'SELECT id, name, price, quantity, image FROM products';
+  const query = 'SELECT id, name, price, quantity, image_url FROM products';
   db.query(query, (err, results) => {
     if (err) {
       console.error('Failed to fetch products:', err);
       res.status(500).json({ error: 'Failed to fetch products' });
     } else {
       results.forEach(product => {
-        product.image_url = `http://192.168.1.211:3000/images/${product.image}`;
+        product.image_url = `http://192.168.1.211:3000/images/${product.image_url}`;
       });
       res.json(results);
     }
@@ -39,7 +39,9 @@ app.get('/products', (req, res) => {
 });
 
 // Servir des fichiers statiques depuis le dossier "images"
-app.use('/images', express.static(path.join(__dirname, 'images')));
+//app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/images', express.static('images'));
+
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

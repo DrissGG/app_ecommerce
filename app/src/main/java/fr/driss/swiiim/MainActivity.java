@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ApiService apiService;
     private ProductAdapter productAdapter;
+    private List<Product> productList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         Log.d("MainActivity", "RecyclerView: " + recyclerView);
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -38,27 +42,33 @@ public class MainActivity extends AppCompatActivity {
 
         apiService = retrofit.create(ApiService.class);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        fetchProducts();
+
+        // Appel API pour récupérer les produits
+        fetchProducts(apiService);
 
         Button viewCartButton = findViewById(R.id.view_cart_button);
         viewCartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, CartActivity.class));
+                Intent intent = new Intent(MainActivity.this, CartActivity.class);
+                intent.putParcelableArrayListExtra("products", new ArrayList<>(productList));
+                startActivity(intent);
             }
         });
     }
 
-    private void fetchProducts() {
-        apiService.getProducts().enqueue(new Callback<List<Product>>() {
+    private void fetchProducts(ApiService apiService) {
+        Call<List<Product>> call = apiService.getProducts();
+        call.enqueue(new Callback<List<Product>>() {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-                if (response.isSuccessful()) {
-                    List<Product> productList = response.body();
-                    productAdapter = new ProductAdapter(productList);
+                if (response.isSuccessful() && response.body() != null) {
+                    productList = response.body();
+                    productAdapter = new ProductAdapter(productList, MainActivity.this);
                     recyclerView.setAdapter(productAdapter);
+                } else {
+                    Log.e("MainActivity", "Failed to fetch products");
                 }
             }
 
