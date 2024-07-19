@@ -1,0 +1,34 @@
+MyEcommerceApp/
+├── app/
+│   ├── build/
+│   ├── libs/
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/
+│   │   │   │   └── com/
+│   │   │   │       └── votrepackage/
+│   │   │   │           ├── MainActivity.java
+│   │   │   │           ├── ProductAdapter.java
+│   │   │   │           ├── CartAdapter.java
+│   │   │   │           ├── CartActivity.java
+│   │   │   │           ├── Product.java
+│   │   │   │           ├── ApiService.java
+│   │   │   ├── res/
+│   │   │   │   ├── layout/
+│   │   │   │   │   ├── activity_main.xml
+│   │   │   │   │   ├── item_product.xml
+│   │   │   │   │   └── activity_cart.xml
+│   │   │   │   ├── drawable/
+│   │   │   │   ├── mipmap/
+│   │   │   │   ├── values/
+│   │   │   ├── AndroidManifest.xml
+│   ├── build.gradle
+│   ├── proguard-rules.pro
+├── build.gradle
+├── settings.gradle
+└── gradle/
+
+
+MainActivity - Liste des produits avec des quantités et un bouton pour ajouter au panier.
+CartActivity - Affichage des produits dans le panier.
+Layouts XML - Fichiers de mise en page pour organiser les vues.
