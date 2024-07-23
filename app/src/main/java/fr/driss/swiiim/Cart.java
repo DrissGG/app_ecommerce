@@ -23,8 +23,13 @@ public class Cart {
     }
 
     public void addToCart(Product product) {
+        // Vérifiez si le produit est déjà dans le panier
+        for (Product p : cartList) {
+            if (p.getId().equals(product.getId())) {
+                return; // Le produit est déjà dans le panier
+            }
+        }
         cartList.add(product);
     }
 
 }
-

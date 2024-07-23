@@ -4,8 +4,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,6 +46,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 .placeholder(R.drawable.default_image) // Image par défaut pendant le chargement
                 .error(R.drawable.error_image) // Image en cas d'erreur
                 .into(holder.productImage);
+
+        // Ajouter un clic sur le bouton "Ajouter au panier"
+        holder.addToCartButton.setOnClickListener(v -> {
+            Cart.getInstance().addToCart(product);
+            Toast.makeText(context, "Produit ajouté au panier", Toast.LENGTH_SHORT).show();
+        });
     }
 
     @Override
@@ -54,6 +62,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
         public TextView productName, productPrice, productQuantity;
         public ImageView productImage;
+        public Button addToCartButton;
 
         public ProductViewHolder(@NonNull View view) {
             super(view);
@@ -61,6 +70,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             productPrice = view.findViewById(R.id.product_price);
             productQuantity = view.findViewById(R.id.product_quantity);
             productImage = view.findViewById(R.id.product_image);
+            addToCartButton = view.findViewById(R.id.add_to_cart_button);
         }
     }
 }

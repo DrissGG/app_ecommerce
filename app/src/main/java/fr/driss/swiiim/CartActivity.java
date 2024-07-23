@@ -1,6 +1,7 @@
 package fr.driss.swiiim;
 
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,8 +22,24 @@ public class CartActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        cartItemList = new ArrayList<>(); // Fetch your cart items from a data source
+        // Obtenir les produits du panier depuis la classe Cart
+        //List<Product> products = getIntent().getParcelableArrayListExtra("products");
+
+
+        cartItemList = new ArrayList<>();
+        for (Product product : Cart.getInstance().getCartList()) {
+            // Vérifie si le produit existe déjà dans la liste
+//            boolean exists =false;
+//            for (CartItem cartItem : cartItemList){
+//                if(cartItem.getProduct().getId().equals(product.getId())){
+//                    cartItem.setQuantity(cartItem.getQuantity()+1); //augmente la quantité
+//                    exists = true;
+//                    break;
+
+            cartItemList.add(new CartItem(product,1));
+        }
         cartAdapter = new CartAdapter(cartItemList);
         recyclerView.setAdapter(cartAdapter);
+
     }
 }

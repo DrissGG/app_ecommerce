@@ -42,8 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
         apiService = retrofit.create(ApiService.class);
 
-
-
         // Appel API pour récupérer les produits
         fetchProducts(apiService);
 
@@ -52,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, CartActivity.class);
+                if (productList == null) {
+                    productList = new ArrayList<>();
+                }
                 intent.putParcelableArrayListExtra("products", new ArrayList<>(productList));
                 startActivity(intent);
             }
