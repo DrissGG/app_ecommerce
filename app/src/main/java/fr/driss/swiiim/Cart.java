@@ -5,10 +5,10 @@ import java.util.List;
 
 public class Cart {
     private static Cart instance;
-    private List<CartItem> cartList;
+    private List<CartItem> items;
 
     private Cart() {
-        cartList = new ArrayList<>();
+        items = new ArrayList<>();
     }
 
     public static Cart getInstance() {
@@ -18,37 +18,27 @@ public class Cart {
         return instance;
     }
 
-    public List<CartItem> getCartList() {
-        return cartList;
-    }
-
     public void addToCart(Product product) {
-        boolean productFound = false;
-        for (CartItem cartItem : cartList) {
-            if (cartItem.getProduct().getId().equals(product.getId())) {
-                // Vérifiez si la quantité actuelle + 1 dépasse le stock
-                int newQuantity = cartItem.getQuantity() + 1;
-                if (newQuantity <= product.getQuantity()) {
-                    cartItem.setQuantity(newQuantity); // Incrémenter la quantité
-                } else {
-                    // Afficher un message d'erreur ou gérer le cas où la quantité dépasse le stock
-                    // Par exemple, vous pouvez afficher un toast ou une notification
-                    System.out.println("La quantité demandée dépasse le stock disponible.");
+        for (CartItem item : items) {
+            if (item.getProduct().getId().equals(product.getId())) {
+                if (item.getQuantity() < product.getQuantity()) {
+                    item.setQuantity(item.getQuantity() + 1);
                 }
-                productFound = true;
-                break;
+                return;
             }
         }
-
-        if (!productFound) {
-            if (product.getQuantity() > 0) { // Assurez-vous qu'il y a du stock
-                cartList.add(new CartItem(product, 1)); // Ajouter le produit avec une quantité de 1
-            } else {
-                // Gérer le cas où le produit n'est pas en stock
-                // Par exemple, afficher un message ou ne pas ajouter le produit
-                System.out.println("Produit non disponible en stock.");
-            }
-        }
+        items.add(new CartItem(product, 1));
     }
 
+    public List<CartItem> getItems() {
+        return items;
+    }
+
+    public double getTotal() {
+        double total = 0;
+        for (CartItem item : items) {
+            total += item.getQuantity() * item.getProduct().getPrice();
+        }
+        return total;
+    }
 }

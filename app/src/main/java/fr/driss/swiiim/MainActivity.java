@@ -1,16 +1,19 @@
 package fr.driss.swiiim;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+import android.view.MenuItem;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -25,36 +28,46 @@ public class MainActivity extends AppCompatActivity {
     private ProductAdapter productAdapter;
     private List<Product> productList;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        recyclerView = findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view_cart);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        Log.d("MainActivity", "RecyclerView: " + recyclerView);
-
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.211:3000")
+                .baseUrl("http://192.168.1.211:3000/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         apiService = retrofit.create(ApiService.class);
 
-        // Appel API pour récupérer les produits
         fetchProducts(apiService);
 
-        Button viewCartButton = findViewById(R.id.view_cart_button);
-        viewCartButton.setOnClickListener(new View.OnClickListener() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, CartActivity.class);
-                if (productList == null) {
-                    productList = new ArrayList<>();
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+                if (id == R.id.nav_home) {
+                    // Handle Home action
+                    return true;
+                } else if (id == R.id.nav_search) {
+                    // Handle Search action
+                    return true;
+                } else if (id == R.id.nav_cart) {
+                    // Handle Cart action
+                    Intent intent = new Intent(MainActivity.this, CartActivity.class);
+                    startActivity(intent);
+                    return true;
+                } else if (id == R.id.nav_login) {
+                    // Handle Login action
+                    return true;
                 }
-                intent.putParcelableArrayListExtra("products", new ArrayList<>(productList));
-                startActivity(intent);
+                return false;
             }
         });
     }
@@ -78,5 +91,11 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("MainActivity", "Failed to fetch products", t);
             }
         });
+    }
+
+    public void addToCart(Product product) {
+        Log.d("MainActivity", "Adding to cart: " + product.getName());
+        Cart.getInstance().addToCart(product);
+        Toast.makeText(this, product.getName() + " added to cart", Toast.LENGTH_SHORT).show();
     }
 }

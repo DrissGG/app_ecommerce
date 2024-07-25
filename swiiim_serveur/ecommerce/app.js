@@ -31,16 +31,16 @@ app.get('/products', (req, res) => {
       res.status(500).json({ error: 'Failed to fetch products' });
     } else {
       results.forEach(product => {
-        product.image_url = `http://192.168.1.211:3000/images/${product.image_url}`;
-      });
+      product.image_url = `http://192.168.1.211:3000/images/${path.basename(product.image_url)}`;   
+     });
       res.json(results);
     }
   });
 });
 
 // Servir des fichiers statiques depuis le dossier "images"
-//app.use('/images', express.static(path.join(__dirname, 'images')));
-app.use('/images', express.static('images'));
+app.use('/images', express.static(path.join(__dirname, 'images')));
+//app.use('/images', express.static('images'));
 
 
 app.listen(port, () => {

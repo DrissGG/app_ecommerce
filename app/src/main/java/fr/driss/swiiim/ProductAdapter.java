@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,17 +39,19 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.productPrice.setText(String.format("%.2f €", product.getPrice()));
         holder.productQuantity.setText(String.valueOf(product.getQuantity()));
 
-        // Glide pour charger l'image
         Glide.with(context)
-                .load(product.getImageUrl())//url de l'image
+                .load("http://192.168.1.211:3000/images/" + product.getImageUrl())
                 .placeholder(R.drawable.default_image) // Image par défaut pendant le chargement
                 .error(R.drawable.error_image) // Image en cas d'erreur
                 .into(holder.productImage);
 
-        // Ajouter un clic sur le bouton "Ajouter au panier"
-        holder.addToCartButton.setOnClickListener(v -> {
-            Cart.getInstance().addToCart(product);
-            Toast.makeText(context, "Produit ajouté au panier", Toast.LENGTH_SHORT).show();
+        holder.addToCartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (context instanceof MainActivity) {
+                    ((MainActivity) context).addToCart(product);
+                }
+            }
         });
     }
 
@@ -64,13 +65,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         public ImageView productImage;
         public Button addToCartButton;
 
-        public ProductViewHolder(@NonNull View view) {
-            super(view);
-            productName = view.findViewById(R.id.product_name);
-            productPrice = view.findViewById(R.id.product_price);
-            productQuantity = view.findViewById(R.id.product_quantity);
-            productImage = view.findViewById(R.id.product_image);
-            addToCartButton = view.findViewById(R.id.add_to_cart_button);
+        public ProductViewHolder(@NonNull View itemView) {
+            super(itemView);
+            productName = itemView.findViewById(R.id.product_name);
+            productPrice = itemView.findViewById(R.id.product_price);
+            productQuantity = itemView.findViewById(R.id.product_quantity);
+            productImage = itemView.findViewById(R.id.product_image);
+            addToCartButton = itemView.findViewById(R.id.add_to_cart_button);
         }
     }
 }

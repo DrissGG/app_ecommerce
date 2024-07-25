@@ -9,11 +9,15 @@ public class Product implements Parcelable {
     private double price;
     private String imageUrl;
     private int quantity;
+    private int maxQuantity;
 
-    public Product(String id, String name, double price) {
+    public Product(String id, String name, double price, String imageUrl, int maxQuantity) {
         this.id = id;
         this.name = name;
         this.price = price;
+        this.imageUrl = imageUrl;
+        this.maxQuantity = maxQuantity;
+        this.quantity = 0; // initial quantity in cart is zero
     }
 
     protected Product(Parcel in) {
@@ -22,6 +26,7 @@ public class Product implements Parcelable {
         price = in.readDouble();
         imageUrl = in.readString();
         quantity = in.readInt();
+        maxQuantity = in.readInt();
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {
@@ -48,12 +53,20 @@ public class Product implements Parcelable {
         dest.writeDouble(price);
         dest.writeString(imageUrl);
         dest.writeInt(quantity);
+        dest.writeInt(maxQuantity);
     }
-
     // Getters and setters
 
     public String getId() {
         return id;
+    }
+
+    public int getMaxQuantity() {
+        return maxQuantity;
+    }
+
+    public void setMaxQuantity(int maxQuantity) {
+        this.maxQuantity = maxQuantity;
     }
 
     public void setId(String id) {
