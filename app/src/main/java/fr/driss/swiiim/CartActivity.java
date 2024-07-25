@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class CartActivity extends AppCompatActivity {
+public class CartActivity extends AppCompatActivity implements CartAdapter.OnQuantityChangeListener{
     private RecyclerView recyclerView;
     private CartAdapter cartAdapter;
     private List<CartItem> cartItemList;
-    private TextView totalTextView;
+    private TextView totalAmount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,15 +35,24 @@ public class CartActivity extends AppCompatActivity {
             }
         }
 
-        cartAdapter = new CartAdapter(cartItemList, this);
+        cartAdapter = new CartAdapter(cartItemList, this,this);
         recyclerView.setAdapter(cartAdapter);
 
-        totalTextView = findViewById(R.id.total_text_view);
-        updateTotal();
+        totalAmount = findViewById(R.id.total_text_view);
+        updateTotalAmount();
     }
 
-    private void updateTotal() {
-        double total = Cart.getInstance().getTotal();
-        totalTextView.setText(String.format("Total: %.2f €", total));
+    @Override
+    public void onQuantityChanged() {
+        updateTotalAmount();
     }
+
+    private void updateTotalAmount() {
+        double total = 0.0;
+        for (CartItem item : cartItemList) {
+            total += item.getProduct().getPrice() * item.getQuantity();
+        }
+        totalAmount.setText(String.format("Total: %.2f €", total));
+    }
+
 }

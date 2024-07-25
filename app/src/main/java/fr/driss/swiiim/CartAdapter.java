@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,10 +19,12 @@ import java.util.List;
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
     private List<CartItem> cartItemList;
     private Context context;
+    private OnQuantityChangeListener quantityChangeListener;
 
-    public CartAdapter(List<CartItem> cartItemList, Context context) {
+    public CartAdapter(List<CartItem> cartItemList, Context context, OnQuantityChangeListener quantityChangeListener) {
         this.cartItemList = cartItemList;
         this.context = context;
+        this.quantityChangeListener = quantityChangeListener;
     }
 
     @NonNull
@@ -46,13 +49,31 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
 
         if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(context)
-                    .load("http://192.168.1.211:3000/" + imageUrl)
+                    .load(imageUrl)
                     .placeholder(R.drawable.default_image) // Image par défaut pendant le chargement
                     .error(R.drawable.error_image) // Image en cas d'erreur
                     .into(holder.productImage);
         } else {
             holder.productImage.setImageResource(R.drawable.default_image); // Image par défaut
         }
+
+        holder.decreaseQuantityButton.setOnClickListener(v -> {
+            int currentQuantity = cartItem.getQuantity();
+            if (currentQuantity > 1) {
+                cartItem.setQuantity(currentQuantity - 1);
+                notifyItemChanged(position);
+                quantityChangeListener.onQuantityChanged();
+            }
+        });
+
+        holder.increaseQuantityButton.setOnClickListener(v -> {
+            if (product.getQuantity() >cartItem.getQuantity()){
+                cartItem.setQuantity(cartItem.getQuantity() + 1);
+                notifyItemChanged(position);
+                quantityChangeListener.onQuantityChanged();
+            }
+
+        });
     }
 
     @Override
@@ -63,6 +84,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     public static class CartViewHolder extends RecyclerView.ViewHolder {
         public TextView productName, productPrice, productQuantity;
         public ImageView productImage;
+        public Button increaseQuantityButton, decreaseQuantityButton;
 
         public CartViewHolder(@NonNull View view) {
             super(view);
@@ -70,6 +92,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             productPrice = view.findViewById(R.id.cart_product_price);
             productQuantity = view.findViewById(R.id.cart_product_quantity);
             productImage = view.findViewById(R.id.cart_product_image);
+            increaseQuantityButton = view.findViewById(R.id.increase_quantity_button);
+            decreaseQuantityButton = view.findViewById(R.id.decrease_quantity_button);
+
         }
+    }
+    public interface OnQuantityChangeListener {
+        void onQuantityChanged();
     }
 }

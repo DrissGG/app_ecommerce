@@ -40,7 +40,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.productQuantity.setText(String.valueOf(product.getQuantity()));
 
         Glide.with(context)
-                .load("http://192.168.1.211:3000/images/" + product.getImageUrl())
+                .load(product.getImageUrl())
                 .placeholder(R.drawable.default_image) // Image par défaut pendant le chargement
                 .error(R.drawable.error_image) // Image en cas d'erreur
                 .into(holder.productImage);
